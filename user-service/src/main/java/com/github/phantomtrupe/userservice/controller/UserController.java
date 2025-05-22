@@ -36,6 +36,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/cities")
+    public ResponseEntity<List<String>> getDistinctCities() {
+        List<String> cities = userService.getDistinctCities();
+        return ResponseEntity.ok(cities);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDto) {
         UserDTO updated = userService.updateUser(id, userDto);

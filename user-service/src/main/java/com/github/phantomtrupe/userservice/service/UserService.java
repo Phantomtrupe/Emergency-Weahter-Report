@@ -9,4 +9,5 @@ public interface UserService {
     UserDTO updateUser(Long id, UserDTO userDto);
     void deleteUser(Long id);
     List<UserDTO> getAllUsers();
+    List<String> getDistinctCities();
 }
