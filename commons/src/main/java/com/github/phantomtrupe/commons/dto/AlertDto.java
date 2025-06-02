@@ -1,4 +1,4 @@
-package com.github.phantomtrupe.weatherservice.model;
+package com.github.phantomtrupe.commons.dto;
 
 import java.time.Instant;
 

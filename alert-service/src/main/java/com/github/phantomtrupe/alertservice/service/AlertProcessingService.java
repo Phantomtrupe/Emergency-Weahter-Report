@@ -1,6 +1,6 @@
 package com.github.phantomtrupe.alertservice.service;
 
-import com.github.phantomtrupe.alertservice.model.AlertDto;
+import com.github.phantomtrupe.commons.dto.AlertDto;
 import com.github.phantomtrupe.alertservice.model.AlertRecord;
 import com.github.phantomtrupe.alertservice.model.NotificationRequest;
 import com.github.phantomtrupe.alertservice.repository.AlertRecordRepository;
@@ -49,20 +49,21 @@ public class AlertProcessingService {
                         .subscribeOn(Schedulers.boundedElastic())
                         .then(Mono.just(record));
             })
-            .flatMapMany(record -> userClient.getUsersByCityAndSeverity(record.getCity(), record.getEvent()))
+            .flatMapMany(record -> userClient.getUsersByCity(record.getCity()))
             .flatMap(user -> {
                 NotificationRequest req = new NotificationRequest();
                 req.setEmail(user.getEmail());
                 req.setPhoneNumber(user.getPhoneNumber());
                 req.setMessage(String.format("[%s] %s (from %s to %s)",
                         user.getCity(), dto.getEvent(), dto.getStartTime(), dto.getEndTime()));
-                return notificationClient.sendNotification(req);
+                return notificationClient.sendNotification(req)
+                        .onErrorResume(e -> Mono.empty());
             })
             .then();
     }
 
     public Flux<AlertRecord> getAlertHistory() {
-        return Mono.fromCallable(() -> repository.findAll())
+        return Mono.fromCallable(repository::findAll)
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(Flux::fromIterable);
     }

@@ -5,6 +5,7 @@ import com.github.phantomtrupe.userservice.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDto) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDto) {
         UserDTO created = userService.createUser(userDto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
@@ -31,8 +32,10 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getUsers(@RequestParam(value = "city", required = false) String city) {
+        List<UserDTO> users = (city != null)
+                ? userService.getUsersByCity(city)
+                : userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
@@ -43,7 +46,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDto) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDto) {
         UserDTO updated = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updated);
     }

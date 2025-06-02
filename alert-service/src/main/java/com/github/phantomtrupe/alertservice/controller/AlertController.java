@@ -1,6 +1,6 @@
 package com.github.phantomtrupe.alertservice.controller;
 
-import com.github.phantomtrupe.alertservice.model.AlertDto;
+import com.github.phantomtrupe.commons.dto.AlertDto;
 import com.github.phantomtrupe.alertservice.model.AlertRecord;
 import com.github.phantomtrupe.alertservice.service.AlertProcessingService;
 import org.springframework.web.bind.annotation.*;

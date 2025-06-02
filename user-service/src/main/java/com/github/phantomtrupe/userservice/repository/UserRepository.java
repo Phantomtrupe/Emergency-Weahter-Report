@@ -11,4 +11,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT DISTINCT u.city FROM User u")
     List<String> findDistinctCities();
+
+    List<User> findByCity(String city);
 }

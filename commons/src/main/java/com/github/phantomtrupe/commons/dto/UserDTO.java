@@ -1,10 +1,22 @@
 package com.github.phantomtrupe.commons.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class UserDTO {
     private Long id;
+
+    @NotBlank(message = "Name is mandatory")
     private String name;
+
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
     private String email;
+
+    @NotBlank(message = "Phone number is mandatory")
     private String phoneNumber;
+
+    @NotBlank(message = "City is mandatory")
     private String city;
 
     public UserDTO() {

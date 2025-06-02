@@ -67,4 +67,11 @@ public class UserServiceImpl implements UserService {
     public List<String> getDistinctCities() {
         return userRepository.findDistinctCities();
     }
+
+    @Override
+    public List<UserDTO> getUsersByCity(String city) {
+        return userRepository.findByCity(city).stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))
+                .collect(Collectors.toList());
+    }
 }

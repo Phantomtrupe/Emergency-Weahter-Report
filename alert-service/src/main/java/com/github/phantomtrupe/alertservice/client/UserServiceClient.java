@@ -13,11 +13,10 @@ public class UserServiceClient {
         this.webClient = userServiceWebClient;
     }
 
-    public Flux<UserDTO> getUsersByCityAndSeverity(String city, String severity) {
+    public Flux<UserDTO> getUsersByCity(String city) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/users")
                         .queryParam("city", city)
-                        .queryParam("severity", severity)
                         .build())
                 .retrieve()
                 .bodyToFlux(UserDTO.class);

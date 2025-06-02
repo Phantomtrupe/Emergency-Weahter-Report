@@ -24,7 +24,7 @@ public class WeatherAlertScheduler {
             .doOnNext(tick -> log.info("Triggering weather alert workflow"))
             .flatMap(tick -> weatherAlertService.processAlerts())
             .subscribe(
-                null,
+                tick -> { /* no-op */ },
                 error -> log.error("Error in weather alert scheduler", error)
             );
     }

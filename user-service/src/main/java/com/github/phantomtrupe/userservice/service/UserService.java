@@ -10,4 +10,5 @@ public interface UserService {
     void deleteUser(Long id);
     List<UserDTO> getAllUsers();
     List<String> getDistinctCities();
+    List<UserDTO> getUsersByCity(String city);
 }

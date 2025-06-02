@@ -4,7 +4,7 @@ import com.github.phantomtrupe.weatherservice.client.AlertServiceClient;
 import com.github.phantomtrupe.weatherservice.client.GeoClient;
 import com.github.phantomtrupe.weatherservice.client.OneCallClient;
 import com.github.phantomtrupe.weatherservice.client.UserServiceClient;
-import com.github.phantomtrupe.weatherservice.model.AlertDto;
+import com.github.phantomtrupe.commons.dto.AlertDto;
 import com.github.phantomtrupe.weatherservice.model.GeocodeResponse;
 import com.github.phantomtrupe.weatherservice.model.OneCallAlert;
 import com.github.phantomtrupe.weatherservice.model.OneCallResponse;
@@ -15,7 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.util.Objects;
 
 @Service
 public class WeatherAlertService {
@@ -44,11 +43,12 @@ public class WeatherAlertService {
      * 4. Map into your AlertDto.
      * 5. Forward to alert-service.
      */
-    public Flux<Void> processAlerts() {
+    // Return Mono<Void> that completes when all cities are processed
+    public Mono<Void> processAlerts() {
         return userClient.getDistinctCities()
                 .distinct()
                 .flatMap(this::handleCity, /* concurrency */ 4)
-                .thenMany(Flux.empty());  // return a completion-only Flux<Void>
+                .then();
     }
 
     private Flux<Void> handleCity(String city) {
@@ -64,10 +64,14 @@ public class WeatherAlertService {
         double lon = coords.getLon();
 
         return oneCallClient.getOneCall(lat, lon)
+                .onErrorResume(e -> {
+                    log.warn("Skipping OneCall for {} due to error: {}", city, e.getMessage());
+                    return Mono.empty();
+                })
                 .flatMapMany(this::extractAlerts)
                 .map(alert -> toDto(city, alert))
                 .flatMap(dto -> alertClient.sendAlert(dto)
-                        .doOnSuccess(v -> log.info("Forwarded “{}” for {}", dto.getEvent(), city))
+                        .doOnSuccess(v -> log.info("Forwarded '{}' for {}", dto.getEvent(), city))
                         .doOnError(err -> log.error("Failed to forward {} for {}: {}", dto.getEvent(), city, err.getMessage()))
                 );
     }

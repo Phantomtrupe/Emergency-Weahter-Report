@@ -1,6 +1,6 @@
 package com.github.phantomtrupe.weatherservice.client;
 
-import com.github.phantomtrupe.weatherservice.model.AlertDto;
+import com.github.phantomtrupe.commons.dto.AlertDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
