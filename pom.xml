@@ -30,6 +30,7 @@
         <module>notifier-service</module>
         <module>alert-service</module>
         <module>weather-service</module>
+        <module>api-gateway-service</module>
     </modules>
 
     <dependencies>
@@ -49,4 +50,5 @@
     </dependencyManagement>
 
 </project>
+
 

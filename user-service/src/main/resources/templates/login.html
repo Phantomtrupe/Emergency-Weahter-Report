@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <h1>Login</h1>
+      <form id="loginForm">
+        <label>Username:<input type="text" name="username" /></label>
+        <label>Password:<input type="password" name="password" /></label>
+        <button type="submit">Login</button>
+      </form>
+      <div id="message" class="message"></div>
+      <div class="auth-link">
+        Don't have an account? <a th:href="@{/register}">Register here</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = { username: form.username.value, password: form.password.value };
+      const res = await fetch('/api/users/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const msg = document.getElementById('message');
+      if (!res.ok) {
+        const ct = res.headers.get('content-type');
+        if (ct && ct.includes('application/json')) {
+          const body = await res.json();
+          msg.innerHTML = body.errors.map(err => `<div>${err}</div>`).join('');
+        } else {
+          msg.textContent = await res.text();
+        }
+        return;
+      }
+      const { token } = await res.json();
+      localStorage.setItem('jwt', token);
+      window.location.replace('/');
+    });
+  </script>
+</body>
+</html>

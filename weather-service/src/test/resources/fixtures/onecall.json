@@ -1,0 +1,17 @@
+{
+  "alerts": [
+    {
+      "event": "Storm",
+      "description": "Heavy storm expected",
+      "start": 1633036800,
+      "end": 1633040400
+    },
+    {
+      "event": "Flood",
+      "description": "Flood warning in low areas",
+      "start": 1633051200,
+      "end": 1633054800
+    }
+  ]
+}
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <h1>Register</h1>
+      <form id="registerForm">
+        <label>Name:<input type="text" name="name" /></label>
+        <label>Email:<input type="email" name="email" /></label>
+        <label>Phone:<input type="text" name="phoneNumber" /></label>
+        <label>City:<input type="text" name="city" /></label>
+        <label>Username:<input type="text" name="username" /></label>
+        <label>Password:<input type="password" name="password" /></label>
+        <button type="submit">Register</button>
+      </form>
+      <div id="message" class="message"></div>
+      <div class="auth-link">
+        Already have an account? <a th:href="@{/login}">Login here</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById('registerForm');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = {
+        name: form.name.value,
+        email: form.email.value,
+        phoneNumber: form.phoneNumber.value,
+        city: form.city.value,
+        username: form.username.value,
+        password: form.password.value
+      };
+      const res = await fetch('/api/users/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+      });
+      const msg = document.getElementById('message');
+      if (res.ok) {
+        window.location.replace('/login');
+      } else {
+         msg.style.color = '';
+         const ct = res.headers.get('content-type');
+         if (ct && ct.includes('application/json')) {
+           const body = await res.json();
+           msg.innerHTML = body.errors.map(err => `<div>${err}</div>`).join('');
+         } else {
+           msg.textContent = await res.text();
+         }
+       }
+    });
+  </script>
+</body>
+</html>

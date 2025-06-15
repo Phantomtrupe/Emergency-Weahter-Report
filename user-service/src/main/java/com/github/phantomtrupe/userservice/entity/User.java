@@ -17,6 +17,9 @@ public class User {
     private String email;
     private String phoneNumber;
     private String city;
+    private String username;
+    private String passwordHash;
+    private String role;
 
     public User() {
     }
@@ -27,6 +30,12 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.city = city;
+    }
+
+    public User(String username, String passwordHash) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.role = "ROLE_USER";
     }
 
     public Long getId() {
@@ -67,5 +76,25 @@ public class User {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
